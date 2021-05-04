@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 geopandas = "*"
+osgeo = "*"
+gdal = "==3.1.2"
+rasterstats = "*"
+rtree = "*"
+pygeos = "*"
 
 [dev-packages]
 
