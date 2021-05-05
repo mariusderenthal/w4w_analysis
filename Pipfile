@@ -10,6 +10,7 @@ gdal = "==3.1.2"
 rasterstats = "*"
 rtree = "*"
 pygeos = "*"
+deon = "*"
 
 [dev-packages]
 

@@ -4,8 +4,11 @@
 import logging
 import pathlib
 import datetime
-#from osgeo import gdal
+import pandas as pd
+import geopandas as gpd
 import numpy as np
+from rasterstats import zonal_stats
+import rtree
 
 # settings #############################################################################################################
 # set logging config
@@ -23,14 +26,17 @@ logging.info("Starting process")
 # functions ############################################################################################################
 # folder path ##########################################################################################################
 path_current = pathlib.Path.cwd()
-path_project = path_current.parent.parent
-path_data = path_project / 'data'
-path_data_raw = path_data / 'raw'
-path_interim = path_data / 'interim'
-path_output = path_data / 'processed'
+path_anlysis = path_current / 'analysis'
+path_data = path_current/'data'
+path_data_raw = path_data/'raw'
+path_interim = path_data/'interim'
+path_output = path_data/'processed'
 
-# admin level
-path_admin = path_data_raw / 'landcover' / 'LC_CCI_ESA_COL'
+path_admin = path_data_raw/'admin_areas'/'col_second_level_admin_boundaries'/'col_second_level_admin_boundaries.shp'
+path_catch = path_data_raw/'catchment_areas'/'hydrosheds-de3a202db76ddd93c689'/'hybas_sa_lev00_v1c'/'hybas_sa_lev00_v1c.shp'
+path_dam = path_data_raw/'dam_locations'/'GRanD_Version_1_3'/'GRanD_dams_v1_3.shp'
+path_river = path_interim/'rivers'/'rio_sogamoso.gpkg'
+
 # global variables #####################################################################################################
 # process ##############################################################################################################
 # most important land cover classes in study area
