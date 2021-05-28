@@ -198,16 +198,56 @@ df_reforest[reforest_classes] = df_reforest[reforest_classes].fillna(0)
 # calculte total reforested count
 df_reforest["reforest_count"] = df_reforest[reforest_classes].sum(axis=1)
 # calculte percentage of re- and afforestation sources
-df_reforest["cropland_rainfed_reforest"] = df_reforest[10] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["mosaic_cropland_reforest"] = df_reforest[30] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["mosaic_natural_vegetation_reforest"] = df_reforest[40] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["mosaic_herbaceous_reforest"] = df_reforest[110] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["shrubland_reforest"] = df_reforest[120] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["grassland_reforest"] = df_reforest[130] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["shrub_herbaceous_cover_flooded_reforest"] = df_reforest[180] / df_reforest[reforest_classes].sum(axis=1)
-df_reforest["water_bodies_reforest"] = df_reforest[210] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["cropland_rainfed_reforest_share"] = df_reforest[10] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["mosaic_cropland_reforest_share"] = df_reforest[30] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["mosaic_natural_vegetation_reforest_share"] = df_reforest[40] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["mosaic_herbaceous_reforest_share"] = df_reforest[110] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["shrubland_reforest_share"] = df_reforest[120] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["grassland_reforest_share"] = df_reforest[130] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["shrub_herbaceous_cover_flooded_reforest_share"] = df_reforest[180] / df_reforest[reforest_classes].sum(axis=1)
+df_reforest["water_bodies_reforest_share"] = df_reforest[210] / df_reforest[reforest_classes].sum(axis=1)
 
 df_reforest.iloc[:, -8:] = df_reforest.iloc[:, -8:].fillna(0)
+
+
+df_reforest.rename(columns={10: 'cropland_rainfed_reforest',
+                      # 11: 'Herbaceous cover',
+                      # 12: 'Tree or shrub cover',
+                      # 20: 'Cropland irrigated or post-flooding',
+                      30: 'mosaic_cropland_reforest',
+                      40: 'mosaic_natural_vegetation_reforest',
+                      # 50: 'tree_cover_evergreen',
+                      # 60: 'tree_cover_deciduous',
+                      # 61: 'Tree cover broadleaved deciduous closed (>40%)',
+                      # 62: 'Tree cover broadleaved deciduous open (15-40%)',
+                      # 70: 'Tree cover needleleaved evergreen closed to open (>15%)',
+                      # 71: 'Tree cover needleleaved evergreen closed (>40%)',
+                      # 72: 'Tree cover needleleaved evergreen open (15-40%)',
+                      # 80: 'Tree cover needleleaved deciduous closed to open (>15%)',
+                      # 81: 'Tree cover needleleaved deciduous closed (>40%)',
+                      # 82: 'Tree cover needleleaved deciduous open (15-40%)',
+                      # 90: 'Tree cover mixed leaf type (broadleaved and needleleaved)',
+                      # 100: 'mosaic_tree_and_shrub',
+                      110: 'mosaic_herbaceous_reforest',
+                      120: 'shrubland_reforest',
+                      # 121: 'Shrubland evergreen',
+                      # 122: 'Shrubland deciduous',
+                      130: 'grassland_reforest',
+                      # 140: 'Lichens and mosses',
+                      # 150: 'Sparse vegetation (tree shrub herbaceous cover) (<15%)',
+                      # 151: 'Sparse tree (<15%)',
+                      # 152: 'Sparse shrub (<15%)',
+                      # 153: 'Sparse herbaceous cover (<15%)',
+                      # 160: 'tree_cover_flooded_fresh',
+                      # 170: 'tree_cover_flooded_saline',
+                      180: 'shrub_herbaceous_cover_flooded_reforest',
+                      # 190: 'urban_areas',
+                      # 200: 'Bare areas',
+                      # 201: 'Consolidated bare areas',
+                      # 202: 'Unconsolidated bare areas',
+                      210: 'water_bodies_reforest',
+                      # 220: 'Permanent snow and ice',
+                      }, inplace=True)
 
 # join data frames
 df_lc_reforest = pd.merge(df_lc, df_reforest[[# 'buffer', 'MPIO_CCDGO', 'year',
@@ -220,17 +260,39 @@ df_lc_reforest = pd.merge(df_lc, df_reforest[[# 'buffer', 'MPIO_CCDGO', 'year',
                                               'grassland_reforest',
                                               'shrub_herbaceous_cover_flooded_reforest',
                                               'water_bodies_reforest',
-                                              'reforest_count'
+                                              'reforest_count',
+                                              'cropland_rainfed_reforest_share',
+                                              'mosaic_cropland_reforest_share',
+                                              'mosaic_natural_vegetation_reforest_share',
+                                              'mosaic_herbaceous_reforest_share',
+                                              'shrubland_reforest_share',
+                                              'grassland_reforest_share',
+                                              'shrub_herbaceous_cover_flooded_reforest_share',
+                                              'water_bodies_reforest_share'
                                               ]],
                           how='left',
                           left_on=[#'buffer', 'MPIO_CCDGO', 'year',
-                                   'HYBAS_ID', 'year','MPIO_CCDGO',
+                                   'HYBAS_ID', 'year', 'MPIO_CCDGO',
                                    ],
                           right_on=[#'buffer', 'MPIO_CCDGO', 'year',
-                                    'HYBAS_ID', 'year','MPIO_CCDGO',
+                                    'HYBAS_ID', 'year', 'MPIO_CCDGO',
                                     ])
 
+# add reforestation rate
 df_lc_reforest['reforest_rate'] = df_lc_reforest["reforest_count"] / df_lc_reforest["pixel_count"]
+
+# add transition probabilities
+# calculte total reforested count
+df_lc_reforest["cropland_rainfed_tp"] = df_lc_reforest["cropland_rainfed_reforest"] / df_lc_reforest["cropland_rainfed"]
+df_lc_reforest["mosaic_cropland_tp"] = df_lc_reforest["mosaic_cropland_reforest"] / df_lc_reforest["mosaic_cropland"]
+df_lc_reforest["mosaic_natural_vegetation_tp"] = df_lc_reforest["mosaic_natural_vegetation_reforest"] / df_lc_reforest["mosaic_natural_vegetation"]
+df_lc_reforest["mosaic_herbaceous_tp"] = df_lc_reforest["mosaic_herbaceous_reforest"] / df_lc_reforest["mosaic_herbaceous"]
+df_lc_reforest["shrubland_tp"] = df_lc_reforest["shrubland_reforest"] / df_lc_reforest["shrubland"]
+df_lc_reforest["grassland_tp"] = df_lc_reforest["grassland_reforest"] / df_lc_reforest["grassland"]
+df_lc_reforest["shrub_herbaceous_cover_flooded_tp"] = df_lc_reforest["shrub_herbaceous_cover_flooded_reforest"] / df_lc_reforest["shrub_herbaceous_cover_flooded"]
+df_lc_reforest["water_bodies_tp"] = df_lc_reforest["water_bodies_reforest"] / df_lc_reforest["water_bodies"]
+
+
 
 # join data with geometry
 logging.info("add geometry information")
