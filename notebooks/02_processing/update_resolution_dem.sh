@@ -1,0 +1,1 @@
+gdalwarp -tr 0.002777777777777999495 0.002777777777777999495 -tap -r bilinear ../../data/01_raw/dem/srtm_22_11/srtm_22_11.tif ../../data/02_intermediate/dem/srtm_22_11_resample.tif -overwrite
