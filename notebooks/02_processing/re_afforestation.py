@@ -21,7 +21,7 @@ logging.info("Starting process")
 
 
 # functions ############################################################################################################
-def get_files(patterns,data_path):
+def get_files(patterns, data_path):
     all_files = []
     for pat in patterns:
         all_files.extend(data_path.glob(pat))
@@ -46,15 +46,10 @@ def make_raster(in_ds, fn, data, data_type, nr_bands, nodata=None):
 path_current = pathlib.Path.cwd()
 path_src = path_current / 'src'
 path_notebooks = path_current / 'notebooks'
-path_data = path_current/'data'
-path_data_raw = path_data/'01_raw'
-path_data_inter = path_data/'02_intermediate'
-path_data_output = path_data/'03_processed'
-
-# study areas
-#path_munic = path_data_inter / 'study_area/municipalties_SA.gpkg'
-#path_catch = path_data_inter / 'study_area/catchments_SA.gpkg'
-#path_river = path_data_inter / 'study_area/river_buffer.gpkg'
+path_data = path_current / 'data'
+path_data_raw = path_data / '01_raw'
+path_data_inter = path_data / '02_intermediate'
+path_data_output = path_data / '03_processed'
 
 # landcover
 path_landcover_92_19 = path_data_raw / 'LC_CCI_ESA_COL'
@@ -66,7 +61,7 @@ pattern_qa = '*qualityflag*'
 files_all = path_landcover_92_19.glob(file_format)
 files_all_list = list(path_landcover_92_19.glob(file_format))
 
-files_data_list = get_files(pattern_data,path_landcover_92_19)
+files_data_list = get_files(pattern_data, path_landcover_92_19)
 files_data = (y for y in files_data_list)
 
 files_qa = path_data.glob(pattern_qa)
@@ -91,27 +86,6 @@ for year in range(1992, 2019):
     raster_old_data[np.where(raster_old_data == 11)] = 10
     raster_new_data[np.where(raster_new_data == 11)] = 10
 
-    '''
-    # create a land cover change image
-    lcChange = raster_new_data - raster_old_data
-
-    # create a binary change image
-    lcChange[np.where(lcChange != 0)] = 1
-
-    # add dimension in order to export
-    lcChange = np.reshape(lcChange, newshape=(1, raster_old.RasterYSize, raster_old.RasterXSize))
-
-    # export change raster
-    make_raster(in_ds=raster_old,
-                fn=str(path_data_inter / f'lc_change/landcover_change_{str(year)}_{str(year + 1)}_binary.tiff'),
-                data=lcChange,
-                nr_bands=1,
-                data_type=gdal.GDT_Int16,
-                nodata=None)
-
-    # logging info
-    logging.info(f"Done processing landcover change from {str(year)} to {str(year + 1)}")
-    '''
     # reclassify forest classes
     raster_old_data[np.where(raster_old_data == 50)] = 5000
     raster_new_data[np.where(raster_new_data == 50)] = 5000
@@ -136,49 +110,6 @@ for year in range(1992, 2019):
     # logging info
     logging.info(f"Done processing re- and afforestation from {str(year)} to {str(year + 1)}")
 
-
-
-'''
-# create vegetation change raster with modifying original classes
-for year in range(1992, 2019):
-    # input Raster
-    raster_old_path = [lc for lc in files_data_list if str(year) in str(lc)]
-    raster_new_path = [lc for lc in files_data_list if str(year + 1) in str(lc)]
-
-    # open raster files
-    raster_old = gdal.Open(str(raster_old_path[0]))
-    raster_new = gdal.Open(str(raster_new_path[0]))
-
-    # read bands as matrix arrays
-    raster_old_data = raster_old.GetRasterBand(1).ReadAsArray().astype(int)
-    raster_new_data = raster_new.GetRasterBand(1).ReadAsArray().astype(int)
-
-    # reclassify year 0 raster
-    raster_old_data[np.where(raster_old_data == 50)] = 5000  #
-
-    # reclassify year 1 raster
-    raster_new_data[np.where(raster_new_data == 50)] = 5000  #
-
-    # create a land cover change image
-    lcChange = raster_new_data - raster_old_data
-
-    # create a binary change image
-    lcChange[np.where(lcChange < 4000)] = 0
-    lcChange = 5000 - lcChange
-    lcChange[np.where(lcChange == 5000)] = 0
-
-    # add dimension in order to export
-    lcChange = np.reshape(lcChange, newshape=(1, raster_old.RasterYSize, raster_old.RasterXSize))
-    make_raster(in_ds=raster_old,
-                fn=str(path_data_inter / f'lc_change/landcover_change_{str(year)}_{str(year + 1)}_veg_test.tiff'),
-                data=lcChange,
-                data_type=gdal.GDT_Int16,
-                nr_bands=1,
-                nodata=None)
-
-    # logging info
-    logging.info(f"Done processing vegetation change from {str(year)} to {str(year + 1)}")
-'''
 # exporting ############################################################################################################
 # end time-count and print time stats ##################################################################################
 end_time = datetime.datetime.now()

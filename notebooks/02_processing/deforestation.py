@@ -21,7 +21,7 @@ logging.info("Starting process")
 
 
 # functions ############################################################################################################
-def get_files(patterns,data_path):
+def get_files(patterns, data_path):
     all_files = []
     for pat in patterns:
         all_files.extend(data_path.glob(pat))
@@ -51,13 +51,9 @@ path_data_raw = path_data/'01_raw'
 path_data_inter = path_data/'02_intermediate'
 path_data_output = path_data/'03_processed'
 
-# study areas
-#path_munic = path_data_inter / 'study_area/municipalties_SA.gpkg'
-#path_catch = path_data_inter / 'study_area/catchments_SA.gpkg'
-#path_river = path_data_inter / 'study_area/river_buffer.gpkg'
-
 # landcover
 path_landcover_92_19 = path_data_raw / 'LC_CCI_ESA_COL'
+
 # global variables #####################################################################################################
 file_format = '*.tif'
 pattern_data = ('*v2.0.7.crop*', '*v2.1.1*')
@@ -66,13 +62,13 @@ pattern_qa = '*qualityflag*'
 files_all = path_landcover_92_19.glob(file_format)
 files_all_list = list(path_landcover_92_19.glob(file_format))
 
-files_data_list = get_files(pattern_data,path_landcover_92_19)
+files_data_list = get_files(pattern_data, path_landcover_92_19)
 files_data = (y for y in files_data_list)
 
 files_qa = path_data.glob(pattern_qa)
 files_qa_list = list(path_landcover_92_19.glob(pattern_qa))
 
-# process #############################################################################################################
+# process ##############################################################################################################
 # create binary change raster without modifying original classes
 for year in range(1992, 2019):
     # input Raster
@@ -114,7 +110,6 @@ for year in range(1992, 2019):
 
     # logging info
     logging.info(f"Done processing deforestation from {str(year)} to {str(year + 1)}")
-
 
 # exporting ############################################################################################################
 # end time-count and print time stats ##################################################################################
