@@ -16,6 +16,7 @@ jupyter = "*"
 jupyterthemes = "*"
 jupyter-nbextensions-configurator = "*"
 jupyter-contrib-nbextensions = "*"
+richdem = "*"
 
 [dev-packages]
 
