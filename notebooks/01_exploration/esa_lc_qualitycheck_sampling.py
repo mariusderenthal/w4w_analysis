@@ -82,6 +82,7 @@ pattern_data = ('*v2.0.7.crop*', '*v2.1.1*')
 pattern_qa = '*qualityflag*'
 pattern_reforest = '*reforest.tiff*'
 pattern_deforest = '*deforest.tiff*'
+pattern_mask = '*masked.tiff'
 
 files_all = path_landcover_92_19.glob(file_format)
 files_all_list = list(path_landcover_92_19.glob(file_format))
@@ -97,7 +98,10 @@ files_reforest = (path_data_inter / 'lc_change').glob(pattern_reforest)
 
 files_deforest_list = list((path_data_inter / 'lc_change').glob(pattern_deforest))
 files_deforest = (path_data_inter / 'lc_change').glob(pattern_reforest)
-# process #############################################################################################################
+
+files_mask_list = list((path_data_inter / 'lc_change').glob(pattern_mask))
+files_mask = (path_data_inter / 'lc_change').glob(pattern_reforest)
+# process ##############################################################################################################
 # sampling for quality check
 with fiona.open(path_study_area, "r") as shapefile:
     shapes = [feature["geometry"] for feature in shapefile]

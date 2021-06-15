@@ -55,6 +55,7 @@ pattern_data = ('*v2.0.7.crop*', '*v2.1.1*')
 pattern_qa = '*qualityflag*'
 pattern_reforest = '*reforest.tiff*'
 pattern_deforest = '*deforest.tiff*'
+pattern_mask = '*masked.tiff'
 
 files_all = path_landcover_92_19.glob(file_format)
 files_all_list = list(path_landcover_92_19.glob(file_format))
@@ -71,10 +72,13 @@ files_reforest = (path_data_inter / 'lc_change').glob(pattern_reforest)
 files_deforest_list = list((path_data_inter / 'lc_change').glob(pattern_deforest))
 files_deforest = (path_data_inter / 'lc_change').glob(pattern_reforest)
 
+files_mask_list = list((path_data_inter / 'lc_change').glob(pattern_mask))
+files_mask = (path_data_inter / 'lc_change').glob(pattern_reforest)
+
 years = [str(i) for i in range(2004, 2020)]
 files_reforest_list_sp = [s for s in files_reforest_list if any(xs in str(s) for xs in years)]
 files_deforest_list_sp = [s for s in files_deforest_list if any(xs in str(s) for xs in years)]
-# process #############################################################################################################
+# process ##############################################################################################################
 '''
 # Read metadata of first file
 with rasterio.open(files_reforest_list[0]) as src0:
