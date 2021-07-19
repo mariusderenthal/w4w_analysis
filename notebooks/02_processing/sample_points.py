@@ -218,6 +218,7 @@ sample_points_gdf.loc[dn, 'afforestation'] = 1
 
 # exporting ############################################################################################################
 sample_points_gdf.to_file(path_data_inter / "sample_points/sample_points_v2.gpkg", driver="GPKG")
+sample_points_gdf.to_csv(path_data_inter / "sample_points/sample_points_v2.csv")
 
 # end time-count and print time stats ##################################################################################
 end_time = datetime.datetime.now()

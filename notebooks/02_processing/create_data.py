@@ -183,8 +183,8 @@ del points_buffer_poly['index_right']
 dn = []
 for year in range(2003, 2020):
     # filter year
-    polys = points_buffer_poly[points_buffer_poly['year'] == 2013]
-    points = points_buffer[points_buffer['year'] == 2013]
+    polys = points_buffer_poly[points_buffer_poly['year'] == year]
+    points = points_buffer[points_buffer['year'] == year]
 
     # perform sjoin
     poly_point = gpd.sjoin(polys, points[['geometry', 'class']], op='contains')
@@ -214,8 +214,8 @@ del df['key_0'], df['class_re']
 df["geometry"] = df.geometry.centroid
 
 # exporting ############################################################################################################
-df.to_file(path_data_inter / "sample_points/sample_points_0615.gpkg", driver="GPKG")
-df.to_csv(path_data_inter / "sample_points/sample_points_0615.csv")
+df.to_file(path_data_output / "sample_points/sample_points_0624.gpkg", driver="GPKG")
+df.to_csv(path_data_output / "sample_points/sample_points_0624.csv")
 
 # end time-count and print time stats ##################################################################################
 end_time = datetime.datetime.now()
