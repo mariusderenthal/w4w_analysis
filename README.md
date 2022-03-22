@@ -1,18 +1,18 @@
-# Project Name
+# Water4Whom
 
-#### -- Project Status: [Active, On-Hold, Completed]
+#### -- Project Status: [On-Hold]
 
 ## Project Intro/Objective
-The purpose of this project is ________. (Describe the main goals of the project and potential civic impact. Limit to a short paragraph, 3-6 Sentences)
+The purpose of this project is analyse oil palm expansion patterns in Santander, Colombia. This project includes the generation of a comprehensive data set from various data sources (ESA CCI LC, SoildGrid,  Census etc.)  and the subsequent Bayesian multilevel analysis including data wrangling, prior selection, model fitting, model comparison, [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), diagnostics, and posterior predictive checks. 
+
+
 
 ### Collaborators
-|Name     |  Github Page   |  Personal Website  |
-|---------|-----------------|--------------------|
-|Misha Berrien | [mishaberrien](https://github.com/mishaberrien)| [www.mishaberrien.com](https://mishaberrien.com/)  |
+
 
 ### Methods Used
-* Inferential Statistics
-* Machine Learning
+* Bayesian inference
+* Logisitic regression
 * Data Visualization
 * Predictive Modeling
 * etc.
@@ -20,30 +20,15 @@ The purpose of this project is ________. (Describe the main goals of the project
 ### Technologies
 * R
 * Python
-* D3
-* PostGres, MySql
-* Pandas, jupyter
-* HTML
-* JavaScript
-* etc.
+* GDAL
+* Pandas, Geopandas
+* brms
 
 ## Project Description
-(Provide more detailed overview of the project.  Talk a bit about your data sources and what questions and hypothesis you are exploring. What specific data analysis/visualization and modelling work are you using to solve the problem? What blockers and challenges are you facing?  Feel free to number or bullet point things here)
-
 
 ## Getting Started
+0. Raw Data is being kept outside of the repo.
+1. Data processing/transformation scripts are being kept [here](https://github.com/mariusderenthal/w4w_analysis/tree/main/notebooks)
+2. brms modeling scripts are being kept [here](https://github.com/mariusderenthal/w4w_analysis/blob/main/models/01_models/model.md)
+3. Visualization scripts are being kept [here](https://github.com/mariusderenthal/w4w_analysis/blob/main/notebooks/03_analysis/results.md)
 
-1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
-2. Raw Data is being kept [here](Repo folder containing raw data) within this repo.
-3. Data processing/transformation scripts are being kept [here](Repo folder containing data processing scripts/notebooks)
-4. etc...
-5. Follow setup [instructions](Link to file)
-
-## Featured Notebooks/Analysis/Deliverables
-* [Notebook/Markdown/Slide Deck Title](#)
-* [Notebook/Markdown/Slide DeckTitle](#)
-* [Blog Post](#)
-
----
-
-This file structure is based on the [DSSG machine learning pipeline](https://github.com/dssg/hitchhikers-guide/tree/master/sources/curriculum/0_before_you_start/pipelines-and-project-workflow).

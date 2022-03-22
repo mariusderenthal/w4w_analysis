@@ -120,6 +120,7 @@ renv/
 # directories
 docs/
 reports/
+src/
 
 # random
 tox.ini
