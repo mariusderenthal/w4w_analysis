@@ -150,6 +150,32 @@ data_samp_samp = readRDS(here('data/03_processed/sample_models/data_model_samp')
 ### 3.1 base model
 
 ``` r
+base_raw_model <- brm(data = data_samp_samp,
+                      family = bernoulli(link = "logit"),
+                      
+                      afforestation ~
+                        altitude_z + slope_z + aspect_z +
+                        ORCDRC_z + AWcTS_z + PHIHOX_z + WWP_z +
+                        dist_pop_z + dist_po_mill_z + dist_road_z + dist_afforestation_z + dist_river_z +
+                        (1|class) + (1|MPIO_CNM_1)+ (1|year)+ (1|Oferta_Amb),
+                      
+                      prior = c(prior(normal(0, 1), class = b),
+                      prior(normal(0, 0.5), class = Intercept),
+                      prior(exponential(1), class = sd)),
+                                                
+                      iter = 2000,
+                      warmup = 1000, 
+                      chains = 4, 
+                      cores = 4,  
+                      seed = 13,
+                      sample_prior = T,
+                      control = list(adapt_delta = 0.95),
+                      file = here("models/02_model_output/base_raw_model"))
+
+base_raw_model <- add_criterion(base_raw_model, c("loo", "waic"))
+```
+
+``` r
 base_model <- brm(data = data_samp_samp, 
                   family = bernoulli(link = "logit"),
                   
@@ -320,7 +346,8 @@ ris_full_model <- add_criterion(ris_full_model, c("loo", "waic"))
 ## 4. model comparison
 
 ``` r
-loo_compare(base_model,
+loo_compare(base_raw_model,
+            base_model,
             base_model_no_group,
             base_slim_model,
             ris_slim_model,
@@ -333,6 +360,7 @@ loo_compare(base_model,
     ## ris_slim_model         0.0       0.0  -672.5     40.5        63.6    6.4  
     ## ris_medium_model      -3.4       1.4  -675.9     40.9        68.2    6.7  
     ## ris_full_model        -6.9       2.9  -679.4     41.1        81.3    7.6  
+    ## base_raw_model       -26.3      10.1  -698.8     41.5        30.4    2.6  
     ## base_slim_model      -28.4       9.6  -700.9     41.3        23.5    2.1  
     ## base_model           -31.8       9.7  -704.3     41.5        27.6    2.3  
     ## base_model_no_group -143.4      18.7  -815.9     44.5         8.9    0.9  
@@ -340,6 +368,7 @@ loo_compare(base_model,
     ## ris_slim_model      1345.0   81.1  
     ## ris_medium_model    1351.9   81.8  
     ## ris_full_model      1358.7   82.2  
+    ## base_raw_model      1397.6   83.1  
     ## base_slim_model     1401.8   82.6  
     ## base_model          1408.5   83.0  
     ## base_model_no_group 1631.8   89.0
