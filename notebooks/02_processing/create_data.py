@@ -44,23 +44,30 @@ path_study_area = path_data_inter / 'study_area/study_area.gpkg'
 # landcover
 path_landcover_92_19 = path_data_raw / 'LC_CCI_ESA_COL'
 
+# ofertas ambiental igac
+path_oferta_ambiental = path_data_raw / 'igac/ofertas_ambiental.gpkg'
+
 # points
 path_points = path_data_inter / 'sample_points/sample_points_v2.gpkg'
 
 # dem
-path_alt = path_data_inter / 'dem/srtm_22_11_resample.tif'
-path_slope = path_data_inter / 'dem/srtm_22_11_resample_slope.tif'
-path_curv = path_data_inter / 'dem/srtm_22_11_resample_curvature.tif'
+path_alt = path_data_inter /    'dem/srtm_22_11_resample.tif'
+path_slope = path_data_inter /  'dem/srtm_22_11_resample_slope.tif'
+path_curv = path_data_inter /   'dem/srtm_22_11_resample_curvature.tif'
 path_aspect = path_data_inter / 'dem/srtm_22_11_resample_aspect.tif'
 
 # soil
-path_awcts = path_data_inter / 'soil/AWCtS_M_sl4_250m_ll.crop_resample.tif'
-path_wwp = path_data_inter / 'soil/WWP_M_sl4_250m_ll.crop_resample.tif'
+path_awcts = path_data_inter /  'soil/AWCtS_M_sl4_250m_ll.crop_resample.tif'
+path_wwp = path_data_inter /    'soil/WWP_M_sl4_250m_ll.crop_resample.tif'
 path_orcdrc = path_data_inter / 'soil/ORCDRC_M_sl4_250m_ll.crop_resample.tif'
 path_phinox = path_data_inter / 'soil/PHIHOX_M_sl4_250m_ll.crop_resample.tif'
 
-# distance
-path_dis_pop = path_data_inter / 'dem/srtm_22_11_resample.tif'
+# distance pop
+path_dis_pop = path_data_raw / 'access/2015_accessibility_to_cities_v1.0/2015_accessibility_to_cities_v1.0_crop_resamp.tif'
+
+# distance roads
+path_roads = path_data_inter / 'roads/osm_roads.gpkg'
+path_vias = path_data_inter / 'roads/vias_santander.gpkg'
 
 # palm_oil
 path_palm_oil = path_data_raw / 'palm_oil/Universal_Mill_List-shp/Universal_Mill_List.shp'
@@ -130,6 +137,12 @@ PHIHOX = rasterio.open(path_phinox)
 points_buffer['PHIHOX'] = [x[0] for x in PHIHOX.sample(coords)]
 del PHIHOX
 
+# get distance to populated center 2015 info for each point
+logging.info("Get distance to populated center 2015 per point")
+dist_pop = rasterio.open(path_dis_pop)
+points_buffer['dist_pop'] = [x[0] for x in dist_pop.sample(coords)]
+del dist_pop
+
 # get municpalties attributes info for each point
 logging.info("Get municpalties info per point")
 municipality = gpd.read_file(path_munic)
@@ -137,11 +150,14 @@ municipality = municipality[['MPIO_CNM_1', 'geometry']]
 points_buffer = gpd.sjoin(points_buffer, municipality, op='within')
 del municipality
 
-# get distance to populated center 2015 info for each point
-logging.info("Get distance to populated center 2015 per point")
-dist_pop = rasterio.open(path_dis_pop)
-points_buffer['dist_pop'] = [x[0] for x in dist_pop.sample(coords)]
-del dist_pop
+# get oferta ambiental info for each point
+logging.info("Get oferta ambiental info per point")
+oferta_ambiental = gpd.read_file(path_oferta_ambiental)
+oferta_ambiental = oferta_ambiental[['Oferta_Amb', 'geometry']]
+oferta_ambiental.to_crs(epsg=4326, inplace=True)
+del points_buffer['index_right']
+points_buffer = gpd.sjoin(points_buffer, oferta_ambiental, op='within')
+del oferta_ambiental
 
 # get distance to river info for each point
 logging.info("Get distance to river per point")
@@ -154,7 +170,7 @@ points_buffer.sindex
 points_buffer['dist_river'] = points_buffer.geometry.apply(min_distance, args=(river,))
 del river
 
-# get distance to river info for each point
+# get distance to oil palm mill info for each point
 logging.info("Get distance to palm oil info per point")
 palm_oil = gpd.read_file(path_palm_oil)
 palm_oil_SA = gpd.clip(palm_oil, study_area)
@@ -162,6 +178,27 @@ palm_oil_SA.to_crs(epsg=3116, inplace=True)
 
 points_buffer['dist_po_mill'] = points_buffer.geometry.apply(min_distance, args=(palm_oil_SA,))
 del palm_oil, palm_oil_SA
+
+# get distance to closest osm street info for each point
+logging.info("Get distance to closest street per point")
+osm_streets = gpd.read_file(path_roads)
+osm_streets_SA = gpd.clip(osm_streets, study_area)
+osm_streets_SA.to_crs(epsg=3116, inplace=True)
+
+points_buffer['dist_road_osm'] = points_buffer.geometry.apply(min_distance, args=(osm_streets_SA,))
+del osm_streets, osm_streets_SA
+
+# get distance to closest via info for each point
+logging.info("Get distance to closest street per point")
+vias_streets = gpd.read_file(path_vias)
+vias_streets_SA = gpd.clip(vias_streets, study_area)
+vias_streets_SA.to_crs(epsg=3116, inplace=True)
+
+points_buffer['dist_road_vias'] = points_buffer.geometry.apply(min_distance, args=(vias_streets_SA,))
+del vias_streets, vias_streets_SA
+
+points_buffer['dist_road'] = points_buffer[['dist_road_osm','dist_road_vias']].min(axis=1)
+
 
 # get distance to nearest afforested in previous year
 logging.info("Get distance to nearest afforested cell per point")
@@ -214,8 +251,8 @@ del df['key_0'], df['class_re']
 df["geometry"] = df.geometry.centroid
 
 # exporting ############################################################################################################
-df.to_file(path_data_output / "sample_points/sample_points_0624.gpkg", driver="GPKG")
-df.to_csv(path_data_output / "sample_points/sample_points_0624.csv")
+df.to_file(path_data_output / "sample_points/sample_points_0311.gpkg", driver="GPKG")
+df.to_csv(path_data_output / "sample_points/sample_points_0311.csv")
 
 # end time-count and print time stats ##################################################################################
 end_time = datetime.datetime.now()

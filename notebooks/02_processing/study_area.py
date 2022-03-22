@@ -83,11 +83,22 @@ palm_planted = palm_planted[['org_name', 'common_name', 'plant_ag', 'size', 'own
 
 # clip rspo palm oil areas with municipalities
 logging.info("clip palm oil data  with municipalities")
-palm_rspo_SA = gpd.overlay(palm_rspo, municipalties[['MPIO_CNM_1', 'geometry']], how='intersection')
+palm_rspo_mun = gpd.overlay(palm_rspo, municipalties[['MPIO_CNM_1', 'geometry']], how='intersection')
+palm_rspo_SA = gpd.overlay(palm_rspo, dam_catch[['MPIO_CNM_1', 'geometry']], how='intersection')
+palm_rspo_mun.to_crs(epsg=3116, inplace=True)
+palm_rspo_SA.to_crs(epsg=3116, inplace=True)
+palm_rspo_mun.to_file(path_data_inter / "study_area/palm_rspo_mun.gpkg", driver="GPKG")
+palm_rspo_SA.to_file(path_data_inter / "study_area/palm_rspo_SA.gpkg", driver="GPKG")
 del palm_rspo
-palm_planted_SA = gpd.overlay(palm_planted, municipalties[['MPIO_CNM_1', 'geometry']], how='intersection')
-del palm_planted
 
+palm_planted_mun = gpd.overlay(palm_planted, municipalties[['MPIO_CNM_1', 'geometry']], how='intersection')
+palm_planted_SA = gpd.overlay(palm_planted, dam_catch[['MPIO_CNM_1', 'geometry']], how='intersection')
+palm_planted_mun.to_crs(epsg=3116, inplace=True)
+palm_planted_SA.to_crs(epsg=3116, inplace=True)
+palm_planted_mun.to_file(path_data_inter / "study_area/palm_planted_mun.gpkg", driver="GPKG")
+palm_planted_SA.to_file(path_data_inter / "study_area/palm_planted_SA.gpkg", driver="GPKG")
+del palm_planted
+df.groupby(['Name', 'Fruit'])['Number'].agg('sum')
 # combine palm oil data
 palm_oil_SA = gpd.overlay(palm_rspo_SA, palm_planted_SA, how='union')
 del palm_rspo_SA, palm_planted_SA
