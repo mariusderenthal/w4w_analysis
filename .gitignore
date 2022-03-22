@@ -115,8 +115,19 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+renv/
 
 # directories
-/docs
+docs/
+reports/
 
+# random
+tox.ini
+test_environment.py
+renv.lock
+project_structure.md
+Pipfile.lock
+Pipfile
+Makefile
+LICENSE
 
